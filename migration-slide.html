@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サーバー移管・ドメイン変更のご提案 | Creative Studio XXX</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --navy:#0e1b2e; --blue:#1a3a5c; --accent:#2e7cf6;
+    --gold:#f5a623; --text:#fff; --muted:rgba(255,255,255,.6);
+  }
+  body{
+    font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+    background:#111; color:var(--text); overflow:hidden; height:100vh;
+  }
+  .slide{
+    display:none; width:100vw; height:100vh;
+    flex-direction:column; justify-content:center; align-items:center;
+    padding:48px 72px; text-align:center; position:relative;
+    overflow:hidden;
+  }
+  .slide.active{display:flex;}
+
+  .s1{background:linear-gradient(135deg,#0e1b2e 0%,#1a3a5c 60%,#1a4a8c 100%);}
+  .s2{background:linear-gradient(135deg,#0e1b2e,#1a2e1c);}
+  .s3{background:linear-gradient(135deg,#0e1b2e,#2a1a2e);}
+  .s4{background:linear-gradient(135deg,#0e1b2e,#1a2a2e);}
+  .s5{background:linear-gradient(135deg,#0e1b2e,#2e1a1a);}
+  .s6{background:linear-gradient(135deg,#0e1b2e,#1a2e2a);}
+  .s7{background:linear-gradient(135deg,#0e1b2e,#1a3a5c);}
+
+  .slide::before{
+    content:''; position:absolute;
+    width:400px; height:400px; border-radius:50%;
+    background:radial-gradient(circle,rgba(46,124,246,.12) 0%,transparent 70%);
+    top:-100px; right:-80px; pointer-events:none;
+  }
+
+  .tag{
+    display:inline-block;
+    background:rgba(46,124,246,.2); border:1px solid rgba(46,124,246,.4);
+    color:#7eb8ff; border-radius:999px; padding:5px 18px;
+    font-size:.7rem; letter-spacing:.16em; margin-bottom:20px;
+  }
+
+  h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.2;margin-bottom:16px;}
+  h1 em{color:var(--gold);font-style:normal;}
+  h2{font-size:clamp(1.3rem,3vw,2rem);font-weight:900;line-height:1.25;margin-bottom:16px;}
+  .lead{font-size:clamp(.85rem,1.6vw,1rem);opacity:.7;max-width:640px;line-height:1.8;}
+
+  /* テーブル */
+  .price-table{
+    width:100%; max-width:820px; margin-top:20px;
+    border-collapse:collapse; text-align:left;
+  }
+  .price-table th{
+    background:rgba(46,124,246,.25); color:#7eb8ff;
+    padding:9px 14px; font-size:.78rem; letter-spacing:.08em;
+  }
+  .price-table td{
+    padding:10px 14px; border-bottom:1px solid rgba(255,255,255,.08);
+    font-size:clamp(.76rem,1.5vw,.9rem); line-height:1.5;
+  }
+  .price-table tr:last-child td{border-bottom:none;}
+  .price-table .price{font-weight:800;color:var(--gold);white-space:nowrap;}
+  .price-table .note{font-size:.7rem;opacity:.5;display:block;margin-top:2px;}
+  .price-table .check{color:#6effa0;font-weight:700;}
+  .price-table .warn{color:#ffb347;font-weight:700;}
+
+  /* カードグリッド */
+  .card-grid{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:14px; width:100%; max-width:860px; margin-top:20px;
+  }
+  .card-grid.col2{grid-template-columns:repeat(2,1fr); max-width:600px;}
+  .mini-card{
+    background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
+    border-radius:14px; padding:18px 14px; text-align:center;
+  }
+  .mini-card .mi{font-size:1.6rem;margin-bottom:6px;}
+  .mini-card h4{font-size:.85rem;font-weight:700;margin-bottom:4px;}
+  .mini-card p{font-size:.73rem;opacity:.6;line-height:1.5;}
+  .mini-card .mp{font-size:.82rem;font-weight:800;color:var(--gold);margin-top:6px;}
+
+  /* フロー */
+  .flow-row{
+    display:flex; align-items:flex-start; gap:6px;
+    margin-top:24px; flex-wrap:wrap; justify-content:center;
+    max-width:900px;
+  }
+  .flow-box{
+    background:rgba(255,255,255,.08); border-radius:12px;
+    padding:12px 14px; text-align:center; min-width:110px; flex:1;
+  }
+  .flow-box .fn{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--accent); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.75rem; font-weight:900; margin:0 auto 6px;
+  }
+  .flow-box h4{font-size:.78rem;font-weight:700;margin-bottom:3px;line-height:1.3;}
+  .flow-box p{font-size:.68rem;opacity:.55;line-height:1.4;}
+  .flow-arr{font-size:1.2rem;opacity:.3;margin-top:18px;}
+
+  /* 注意リスト */
+  .note-list{
+    list-style:none; max-width:760px; text-align:left; margin-top:16px;
+  }
+  .note-list li{
+    font-size:.86rem; padding:9px 0;
+    border-bottom:1px solid rgba(255,255,255,.08); opacity:.8; line-height:1.6;
+  }
+  .note-list li:last-child{border-bottom:none;}
+  .note-list li::before{content:"※ ";color:var(--accent);}
+
+  /* チェックリスト */
+  .check-list{
+    list-style:none; max-width:760px; text-align:left; margin-top:16px;
+    display:grid; grid-template-columns:1fr 1fr; gap:0;
+  }
+  .check-list li{
+    font-size:.86rem; padding:10px 12px;
+    border-bottom:1px solid rgba(255,255,255,.08); line-height:1.5;
+    display:flex; align-items:flex-start; gap:8px;
+  }
+  .check-list li .ico{font-size:1rem;flex-shrink:0;}
+  .check-list li .txt small{display:block;font-size:.7rem;opacity:.5;margin-top:2px;}
+
+  .cta-btn{
+    display:inline-block; margin-top:28px;
+    background:var(--gold); color:#111; font-weight:800; font-size:.95rem;
+    padding:14px 40px; border-radius:999px; text-decoration:none;
+  }
+
+  /* ナビ */
+  .nav{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    display:flex; align-items:center; gap:12px; z-index:100;
+  }
+  .nav button{
+    background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2);
+    color:#fff; border-radius:999px; padding:9px 22px;
+    font-size:.83rem; cursor:pointer; transition:background .2s;
+  }
+  .nav button:hover{background:rgba(255,255,255,.25);}
+  .nav .ctr{font-size:.78rem;opacity:.4;min-width:52px;text-align:center;}
+
+  .progress{
+    position:fixed; top:0; left:0; height:3px;
+    background:linear-gradient(90deg,var(--accent),var(--gold));
+    transition:width .35s ease; z-index:200;
+  }
+  .hint{position:fixed;top:14px;right:20px;font-size:.67rem;opacity:.25;}
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+<div class="hint">← → キーで操作</div>
+
+<!-- S1: タイトル -->
+<div class="slide s1 active">
+  <div class="tag">SERVER MIGRATION</div>
+  <h1>サーバー移管・<em>ドメイン変更</em><br>作業のご案内</h1>
+  <p class="lead">既存サイトを新しいサーバー・ドメインへ安全に移行するための<br>手順・確認事項・注意点をご説明します。</p>
+</div>
+
+<!-- S2: 作業全体の流れ -->
+<div class="slide s2">
+  <div class="tag">PROCESS</div>
+  <h2>作業全体の流れ</h2>
+  <div class="flow-row">
+    <div class="flow-box">
+      <div class="fn">1</div>
+      <h4>co.jpドメイン取得</h4>
+      <p>法人番号で仮登録<br>登記後に本登録</p>
+    </div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">
+      <div class="fn">2</div>
+      <h4>さくらサーバー契約</h4>
+      <p>自社名義で契約<br>複数サイトを一元管理</p>
+    </div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">
+      <div class="fn">3</div>
+      <h4>WPバックアップ取得</h4>
+      <p>All-in-One WP<br>Migrationで取得</p>
+    </div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">
+      <div class="fn">4</div>
+      <h4>新サーバーに復元</h4>
+      <p>WP簡単インストール<br>→バックアップ復元</p>
+    </div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">
+      <div class="fn">5</div>
+      <h4>ドメイン紐付け</h4>
+      <p>DNS設定<br>メール設定</p>
+    </div>
+    <div class="flow-arr">→</div>
+    <div class="flow-box">
+      <div class="fn">6</div>
+      <h4>旧サイト維持</h4>
+      <p>301リダイレクト<br>契約期間まで存続</p>
+    </div>
+  </div>
+</div>
+
+<!-- S3: お客様から必要な情報 -->
+<div class="slide s3">
+  <div class="tag">CHECKLIST</div>
+  <h2>ご準備いただく情報</h2>
+  <ul class="check-list">
+    <li>
+      <span class="ico">🔑</span>
+      <span class="txt">エックスサーバー ログイン情報<small>管理画面（玄関口）のID・パスワード</small></span>
+    </li>
+    <li>
+      <span class="ico">🖥️</span>
+      <span class="txt">サーバーパネル ログイン情報<small>サーバー内部の管理パネル</small></span>
+    </li>
+    <li>
+      <span class="ico">🌐</span>
+      <span class="txt">ドメイン管理 ログイン情報<small>ドメインパネルのID・パスワード</small></span>
+    </li>
+    <li>
+      <span class="ico">📝</span>
+      <span class="txt">WordPress 管理画面情報<small>ログインURL・ID・パスワード</small></span>
+    </li>
+    <li>
+      <span class="ico">📧</span>
+      <span class="txt">使用中のメールアドレス一覧<small>アドレス・パスワードのセット</small></span>
+    </li>
+    <li>
+      <span class="ico">🏢</span>
+      <span class="txt">法人番号（co.jp取得用）<small>国税庁サイトで確認可能</small></span>
+    </li>
+  </ul>
+</div>
+
+<!-- S4: co.jp取得の注意点 -->
+<div class="slide s4">
+  <div class="tag">DOMAIN</div>
+  <h2>co.jpドメイン 取得の注意点</h2>
+  <table class="price-table">
+    <tr><th>項目</th><th>内容</th><th>ステータス</th></tr>
+    <tr>
+      <td>取得条件</td>
+      <td>日本国内の法人のみ・1法人1ドメインまで</td>
+      <td class="check">✔ 法人であれば取得可</td>
+    </tr>
+    <tr>
+      <td>仮登録制度</td>
+      <td>登記前でも仮登録可能。半年以内に本登録が必要</td>
+      <td class="check">✔ 先行取得できる</td>
+    </tr>
+    <tr>
+      <td>審査期間</td>
+      <td>申請後 3〜5営業日程度かかる</td>
+      <td class="warn">⚠ 即日取得は不可</td>
+    </tr>
+    <tr>
+      <td>必要情報</td>
+      <td>法人番号・登記上の正式社名・住所</td>
+      <td class="warn">⚠ 事前確認が必要</td>
+    </tr>
+    <tr>
+      <td>年間費用</td>
+      <td>約 3,000〜5,000円（更新忘れに注意）</td>
+      <td class="check">✔ .comより高め</td>
+    </tr>
+  </table>
+</div>
+
+<!-- S5: メール移行の注意点 -->
+<div class="slide s5">
+  <div class="tag">EMAIL MIGRATION</div>
+  <h2>📧 メール移行の注意点</h2>
+  <table class="price-table">
+    <tr><th>方式</th><th>データの場所</th><th>移行方法</th></tr>
+    <tr>
+      <td><strong>IMAP</strong><span class="note">サーバー管理型</span></td>
+      <td>サーバー上に保存</td>
+      <td class="check">✔ こちら側でエクスポート可能</td>
+    </tr>
+    <tr>
+      <td><strong>POP</strong><span class="note">ローカル管理型</span></td>
+      <td>パソコン内のみ</td>
+      <td class="warn">⚠ お客様に操作をお願いする</td>
+    </tr>
+  </table>
+  <ul class="note-list" style="margin-top:16px;">
+    <li>旧アドレス → 新アドレスへの<strong>自動転送</strong>をサーバー設定で行います。</li>
+    <li>移行期間中は OUTLOOKに<strong>旧・新アカウントを両方設定</strong>しておくと安全です。</li>
+    <li>使用中のメールソフト（Outlook / Thunderbird 等）を事前にご確認ください。</li>
+    <li>過去メールが不要な場合は新ドメインで受信スタート、もっともシンプルです。</li>
+  </ul>
+</div>
+
+<!-- S6: リスクと対策 -->
+<div class="slide s6">
+  <div class="tag">RISK & SOLUTION</div>
+  <h2>想定リスクと対策</h2>
+  <table class="price-table">
+    <tr><th>リスク</th><th>対策</th></tr>
+    <tr>
+      <td>旧制作会社と連絡が取れない<span class="note">ログイン情報が不明になる可能性</span></td>
+      <td>まず制作会社の存在確認。不明時はHTML取得 or サイト作り直し</td>
+    </tr>
+    <tr>
+      <td>サーバー情報を教えてもらえない<span class="note">複数社を共用管理している場合</span></td>
+      <td>制作会社に必要情報だけ書き出してもらうよう交渉</td>
+    </tr>
+    <tr>
+      <td>1サーバーに複数サイトを集約するリスク<span class="note">ウイルス感染で全滅の恐れ</span></td>
+      <td>定期バックアップ（プラグイン＋サーバー自動）で対策</td>
+    </tr>
+    <tr>
+      <td>旧ドメイン廃止によるリンク切れ<span class="note">取引先・名刺・SNSのリンク</span></td>
+      <td>301リダイレクトを設定。旧ドメインは契約期間中は維持</td>
+    </tr>
+    <tr>
+      <td>co.jp審査中のスケジュール遅延</td>
+      <td>審査3〜5営業日を見込んで余裕を持って申請</td>
+    </tr>
+  </table>
+</div>
+
+<!-- S7: お問い合わせ -->
+<div class="slide s7">
+  <div class="tag">CONTACT</div>
+  <h2>ご不明点はお気軽に<br><em style="color:var(--gold)">ご相談ください</em></h2>
+  <p class="lead">
+    サーバー移管・ドメイン変更は<br>
+    準備をしっかり整えることでスムーズに進みます。<br>
+    情報収集からお手伝いしますのでまずはご連絡ください。
+  </p>
+  <a href="mailto:info@example.com" class="cta-btn">お問い合わせする →</a>
+  <p style="margin-top:18px;font-size:.76rem;opacity:.3;">Creative Studio XXX ｜ info@example.com</p>
+</div>
+
+<!-- ナビ -->
+<div class="nav">
+  <button id="prev">← 前</button>
+  <span class="ctr" id="ctr">1/7</span>
+  <button id="next">次 →</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const prog = document.getElementById('prog');
+  const ctr = document.getElementById('ctr');
+  let cur = 0;
+  function go(n){
+    slides[cur].classList.remove('active');
+    cur = (n+slides.length)%slides.length;
+    slides[cur].classList.add('active');
+    ctr.textContent=`${cur+1}/${slides.length}`;
+    prog.style.width=`${(cur+1)/slides.length*100}%`;
+  }
+  document.getElementById('next').onclick=()=>go(cur+1);
+  document.getElementById('prev').onclick=()=>go(cur-1);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' ')go(cur+1);
+    if(e.key==='ArrowLeft')go(cur-1);
+  });
+  go(0);
+</script>
+</body>
+</html>
